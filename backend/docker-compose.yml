@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Backend Service
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb+srv://dhanyasuvarnark_db_user:Z5Vs2pNSk8lB3iEP@cluster0.mfvax4l.mongodb.net/
+    depends_on:
+      - db
+
+  # MongoDB Service
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - taskflow-db:/data/db
+      - mongodb_data:/data/db  # This keeps your data safe on the host machine
+  
+volumes:
+  mongodb_data:
