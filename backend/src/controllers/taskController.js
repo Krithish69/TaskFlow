@@ -30,3 +30,28 @@ exports.updateTaskStage = async (req, res) => {
 
   res.status(200).json({ success: true, data: task });
 };
+
+// @desc    Add a comment to a task
+// @route   POST /api/tasks/:id/comments
+exports.addComment = async (req, res) => {
+  try {
+    const { text } = req.body;
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    const newComment = {
+      user: req.user.id, // From Auth Middleware
+      text
+    };
+
+    task.comments.push(newComment);
+    await task.save();
+
+    res.status(201).json({ success: true, data: task.comments });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+};
