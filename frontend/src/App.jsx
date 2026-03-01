@@ -3,6 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -30,6 +31,15 @@ function App() {
             </ProtectedRoute>
           } 
         />
+
+        {/* Public Registration Route */}
+        <Route 
+          path="/register" 
+          element={
+            <Register />
+          } 
+        />
+
       </Routes>
     </Router>
   );
