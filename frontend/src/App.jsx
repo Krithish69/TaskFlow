@@ -1,16 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Teams from './pages/Teams';
+import KanbanBoard from './pages/KanbanBoard';
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
 
         {/* Protected Dashboard - Any logged-in user */}
@@ -18,7 +21,20 @@ function App() {
           path="/dashboard" 
           element={
             <ProtectedRoute>
+              <Layout>
               <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/project/:projectId" 
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <KanbanBoard />
+              </Layout>
             </ProtectedRoute>
           } 
         />
@@ -40,12 +56,7 @@ function App() {
             <Register />
           } 
         />
-
-      </Routes>
-    </Router>
-  );
-
-  {/* Protected Teams Route - Any logged-in user */}
+         {/* Protected Teams Route - Any logged-in user */}
   <Route 
     path="/teams" 
     element={
@@ -54,6 +65,11 @@ function App() {
       </ProtectedRoute>
     } 
   />
-}
+
+
+      </Routes>
+    </Router>
+  );
+} 
 
 export default App;

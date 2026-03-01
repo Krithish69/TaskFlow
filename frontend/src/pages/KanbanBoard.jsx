@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../api/axios';
 import TaskComments from '../components/TaskComments';
-import CreateTaskModal from '../components/CreateTaskModal'; // Import the new modal
+import CreateTaskModal from '../components/CreateTaskModel'; // Import the new modal
 
 const KanbanBoard = () => {
   const { projectId } = useParams();
