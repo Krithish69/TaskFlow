@@ -4,12 +4,16 @@ const {
   createTask, 
   updateTaskStage, 
   addComment, 
-  getProjectTasks 
+  getProjectTasks,
+  deleteTask
 } = require('../controllers/taskController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
   .post(protect, createTask);
+
+router.route('/:id')
+  .delete(protect, admin, deleteTask);
 
 router.route('/:id/status')
   .put(protect, updateTaskStage);

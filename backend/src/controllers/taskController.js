@@ -82,3 +82,34 @@ exports.getProjectTasks = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+// @desc    Delete a task
+// @route   DELETE /api/tasks/:id
+// @access  Private/Admin
+const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    // Execute the deletion
+    await task.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Task removed successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const task = await Task.findById(req.params.id);
+if (task) {
+  await task.deleteOne(); // This triggers the pre-hook in the model
+  res.json({ message: 'Task and associated comments removed' });
+}
+
+module.exports = { deleteTask };

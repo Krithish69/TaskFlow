@@ -61,7 +61,9 @@ function App() {
     path="/teams" 
     element={
       <ProtectedRoute>
+      <Layout>
       <Teams />
+      </Layout>
       </ProtectedRoute>
     } 
   />
