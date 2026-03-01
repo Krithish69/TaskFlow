@@ -14,3 +14,22 @@ exports.createTeam = async (req, res) => {
     res.status(400).json({ success: false, error: err.message });
   }
 };
+
+// Add this to your existing teamController.js
+exports.getMyTeams = async (req, res) => {
+  try {
+    // Find teams where user is a member and populate their projects
+    const teams = await Team.find({ members: req.user.id });
+    
+    // For each team, we manually fetch related projects 
+    // (Or use Mongoose virtuals/populate)
+    const teamsWithProjects = await Promise.all(teams.map(async (team) => {
+      const projects = await Project.find({ team: team._id });
+      return { ...team._doc, projects };
+    }));
+
+    res.status(200).json({ success: true, teams: teamsWithProjects });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

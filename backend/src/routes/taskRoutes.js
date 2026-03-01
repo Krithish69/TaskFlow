@@ -12,4 +12,6 @@ router.route('/:id/status')
 
 router.post('/:id/comments', protect, addComment);
 
+router.get('/project/:projectId', protect, getProjectTasks);
+
 module.exports = router;
