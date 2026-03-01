@@ -1,19 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const { createTeam, getAllTeams, getMyTeams } = require('../controllers/teamController');
+
+// Controllers are destructured from the exported object in teamController.js
+const { 
+  createTeam, 
+  getAllTeams, 
+  getMyTeams 
+} = require('../controllers/teamController');
+
+// Middleware for authentication and role-based access
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
 
-// Protected routes
+/**
+ * @route   POST /api/teams
+ * @desc    Create a new team (Logged-in users)
+ * @access  Private
+ */
 router.post('/', protect, createTeam);
 
-// Protected + Admin only route
-router.get('/all', protect, authorize('Admin'), getAllTeams);
-
-// Protected route for users to get their own teams
+/**
+ * @route   GET /api/teams/my-teams
+ * @desc    Get all teams where the current user is a member
+ * @access  Private
+ */
 router.get('/my-teams', protect, getMyTeams);
 
-// Admin-only route to get all teams
+/**
+ * @route   GET /api/teams/all
+ * @desc    Get every team in the system (Admin only)
+ * @access  Private/Admin
+ */
+// Single definition of the /all route to prevent middleware redundancy
 router.get('/all', protect, authorize('Admin'), getAllTeams);
 
 module.exports = router;
