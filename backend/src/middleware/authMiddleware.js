@@ -3,14 +3,12 @@ const User = require('../models/User');
 
 const protect = async (req, res, next) => {
   let token;
-
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
-      
-      next();
+      return next(); // Use return to ensure execution stops here
     } catch (error) {
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
@@ -32,5 +30,5 @@ const admin = (req, res, next) => {
   }
 };
 
-// Combine both exports into one object so neither is overwritten
+// Export both together so they don't overwrite each other
 module.exports = { protect, admin };

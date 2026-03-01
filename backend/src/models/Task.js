@@ -1,22 +1,6 @@
 const mongoose = require('mongoose');
 
-const CommentSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  text: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
+// Define the schema first
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
@@ -43,10 +27,10 @@ const taskSchema = new mongoose.Schema({
   }]
 }, { timestamps: true });
 
+// Attach the cascading delete hook to taskSchema
 taskSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
   try {
     const Comment = mongoose.model('Comment');
-    // Delete all comments associated with this task ID
     await Comment.deleteMany({ task: this._id });
     next();
   } catch (err) {
