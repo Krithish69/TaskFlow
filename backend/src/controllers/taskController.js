@@ -66,3 +66,16 @@ exports.getProjectTasks = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+// @desc    Get all tasks for a specific project
+// @route   GET /api/tasks/project/:projectId
+exports.getProjectTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({ project: req.params.projectId })
+      .populate('assignedTo', 'name email');
+    
+    res.status(200).json({ success: true, data: tasks });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

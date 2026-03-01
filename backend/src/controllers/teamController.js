@@ -33,3 +33,13 @@ exports.getMyTeams = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+// @desc    Get all teams (Admin only)
+exports.getAllTeams = async (req, res) => {
+  try {
+    const teams = await Team.find().populate('owner', 'name email');
+    res.status(200).json({ success: true, count: teams.length, data: teams });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

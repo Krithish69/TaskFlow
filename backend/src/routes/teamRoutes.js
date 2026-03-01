@@ -13,4 +13,7 @@ router.get('/all', protect, authorize('Admin'), getAllTeams);
 // Protected route for users to get their own teams
 router.get('/my-teams', protect, getMyTeams);
 
+// Admin-only route to get all teams
+router.get('/all', protect, authorize('Admin'), getAllTeams);
+
 module.exports = router;

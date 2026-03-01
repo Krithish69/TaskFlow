@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { createTask, updateTaskStage } = require('../controllers/taskController');
+const { 
+  createTask, 
+  updateTaskStage, 
+  addComment, 
+  getProjectTasks 
+} = require('../controllers/taskController');
 const { protect } = require('../middleware/authMiddleware');
-const { addComment } = require('../controllers/taskController');
 
 router.route('/')
   .post(protect, createTask);
