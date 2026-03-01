@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
     const result = await login(email, password);
     if (result.success) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     } else {
       alert(result.message);
     }
@@ -20,9 +20,23 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required
+      />
       <button type="submit">Login</button>
     </form>
   );
 };
+
+export default Login;
