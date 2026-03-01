@@ -11,8 +11,6 @@ services:
       - /app/node_modules
     env_file:
       - .env
-    environment:
-      - MONGO_URI=mongodb+srv://dhanyasuvarnark_db_user:Z5Vs2pNSk8lB3iEP@cluster0.mfvax4l.mongodb.net/
     depends_on:
       - db
 
