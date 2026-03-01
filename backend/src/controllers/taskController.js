@@ -1,15 +1,18 @@
 const Task = require('../models/Task');
 
-// @desc    Create task and assign to user
+// @desc    Create a new task
+// @route   POST /api/tasks
 exports.createTask = async (req, res) => {
   try {
-    const { title, description, projectId, assignedTo, dueDate } = req.body;
-    
+    const { title, description, project, priority, dueDate } = req.body;
+
     const task = await Task.create({
       title,
       description,
-      project: projectId,
-      assignedTo,
+      project,
+      priority: priority || 'Medium',
+      status: 'To Do', // Default status for new tasks
+      createdBy: req.user.id,
       dueDate
     });
 

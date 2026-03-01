@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import AdminPanel from './pages/AdminDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Teams from './pages/Teams';
 
 function App() {
   return (
@@ -43,6 +44,16 @@ function App() {
       </Routes>
     </Router>
   );
+
+  {/* Protected Teams Route - Any logged-in user */}
+  <Route 
+    path="/teams" 
+    element={
+      <ProtectedRoute>
+      <Teams />
+      </ProtectedRoute>
+    } 
+  />
 }
 
 export default App;
