@@ -17,22 +17,36 @@ const CommentSchema = new mongoose.Schema({
   }
 });
 
-const TaskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String },
-  status: { type: String, enum: ['To Do', 'In Progress', 'Done'], default: 'To Do' },
-  priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Medium' },
-  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
-  dueDate: { type: Date },
-  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  // Nested Comments Array
-  comments: [CommentSchema]
+  description: String,
+  status: { 
+    type: String, 
+    enum: ['To Do', 'In Progress', 'Done'], 
+    default: 'To Do' 
+  },
+  priority: { 
+    type: String, 
+    enum: ['Low', 'Medium', 'High'], 
+    default: 'Medium' 
+  },
+  project: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Project', 
+    required: true 
+  },
+  dueDate: Date,
+  comments: [{
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    text: String,
+    createdAt: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
 taskSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
   try {
     const Comment = mongoose.model('Comment');
-    // Delete all comments where the taskId matches this task's _id
+    // Delete all comments associated with this task ID
     await Comment.deleteMany({ task: this._id });
     next();
   } catch (err) {
@@ -40,4 +54,4 @@ taskSchema.pre('deleteOne', { document: true, query: false }, async function (ne
   }
 });
 
-module.exports = mongoose.model('Task', TaskSchema);
+module.exports = mongoose.model('Task', taskSchema);

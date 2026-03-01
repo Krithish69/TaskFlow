@@ -2,7 +2,7 @@ const Task = require('../models/Task');
 
 // @desc    Create a new task
 // @route   POST /api/tasks
-exports.createTask = async (req, res) => {
+const createTask = async (req, res) => {
   try {
     const { title, description, project, priority, dueDate } = req.body;
 
@@ -11,7 +11,7 @@ exports.createTask = async (req, res) => {
       description,
       project,
       priority: priority || 'Medium',
-      status: 'To Do', // Default status for new tasks
+      status: 'To Do',
       createdBy: req.user.id,
       dueDate
     });
@@ -22,21 +22,25 @@ exports.createTask = async (req, res) => {
   }
 };
 
-exports.updateTaskStage = async (req, res) => {
-  const { status } = req.body; // Expecting 'To Do', 'In Progress', or 'Done'
-  
-  const task = await Task.findByIdAndUpdate(
-    req.params.id, 
-    { status }, 
-    { new: true }
-  );
-
-  res.status(200).json({ success: true, data: task });
+// @desc    Update task status/stage
+// @route   PUT /api/tasks/:id/status
+const updateTaskStage = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const task = await Task.findByIdAndUpdate(
+      req.params.id, 
+      { status }, 
+      { new: true }
+    );
+    res.status(200).json({ success: true, data: task });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
 };
 
 // @desc    Add a comment to a task
 // @route   POST /api/tasks/:id/comments
-exports.addComment = async (req, res) => {
+const addComment = async (req, res) => {
   try {
     const { text } = req.body;
     const task = await Task.findById(req.params.id);
@@ -46,7 +50,7 @@ exports.addComment = async (req, res) => {
     }
 
     const newComment = {
-      user: req.user.id, // From Auth Middleware
+      user: req.user.id,
       text
     };
 
@@ -59,23 +63,13 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.getProjectTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({ project: req.params.projectId })
-      .populate('assignedTo', 'name')
-      .sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: tasks });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
 // @desc    Get all tasks for a specific project
 // @route   GET /api/tasks/project/:projectId
-exports.getProjectTasks = async (req, res) => {
+const getProjectTasks = async (req, res) => {
   try {
     const tasks = await Task.find({ project: req.params.projectId })
-      .populate('assignedTo', 'name email');
+      .populate('assignedTo', 'name email')
+      .sort({ createdAt: -1 });
     
     res.status(200).json({ success: true, data: tasks });
   } catch (err) {
@@ -94,8 +88,7 @@ const deleteTask = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Task not found' });
     }
 
-    // Execute the deletion
-    await task.deleteOne();
+    await task.deleteOne(); // Triggers pre-hook in Task model
 
     res.status(200).json({
       success: true,
@@ -106,10 +99,11 @@ const deleteTask = async (req, res) => {
   }
 };
 
-const task = await Task.findById(req.params.id);
-if (task) {
-  await task.deleteOne(); // This triggers the pre-hook in the model
-  res.json({ message: 'Task and associated comments removed' });
-}
-
-module.exports = { deleteTask };
+// Unified Export Object
+module.exports = {
+  createTask,
+  updateTaskStage,
+  addComment,
+  getProjectTasks,
+  deleteTask
+};
